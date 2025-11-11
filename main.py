@@ -20,6 +20,7 @@ from time import sleep
 from pyboxen import boxen
 from rich import print as rprint
 from rich.console import Console
+from rich.table import Table
 from rich.live import Live
 from rich.text import Text
 
@@ -138,7 +139,21 @@ def handle_cmd(cmd: str):
         rprint(allowed_characters)
 
     elif cmd == "list":
+        print()
+        list_of_commands = Table(title="List Of Commands")
+        list_of_commands.add_column("No.", style="white", no_wrap=True)
+        list_of_commands.add_column("Command", style="cyan")
+        list_of_commands.add_column("Usage", style="yellow")
+        list_of_commands.add_column("Action", style="dim")
+        
+        list_of_commands.add_row("0", "unknown", "none", "Default action")
+        list_of_commands.add_row("1", "unknown", "none", "Default action")
+        list_of_commands.add_row("2", "unknown", "none", "Default action")
+        list_of_commands.add_row("3", "unknown", "none", "Default action")
+        list_of_commands.add_row("4", "unknown", "none", "Default action")
+        console.print(list_of_commands)
         rprint("[yellow]Sorry, that's not available right now :/\n[/yellow]")
+        
 
     elif cmd == "":
         return None
