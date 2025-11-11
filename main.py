@@ -47,7 +47,7 @@ def pwd_break(
         for _ in range(len(pwd)):
             if rate_limit is not None and access_count >= rate_limit:
                 rprint(
-                    f"\n[red][Fail] Reached rate limit. Resetting in {rate_cooldown} seconds.[/red]"
+                    f"\n[magenta][!] RATE LIMIT EXCEEDED - Cooldown: {rate_cooldown}s[/magenta]"
                 )
                 access_count = 0
                 sleep(rate_cooldown)
@@ -57,12 +57,12 @@ def pwd_break(
                 styled = Text()
 
                 if break_attempt:
-                    styled.append(break_attempt, style="dim green")
+                    styled.append(break_attempt, style="bright_cyan")
 
                 if pwd.startswith(candidate_char):
-                    styled.append(char, style="dim green")
+                    styled.append(char, style="bright_cyan")
                 else:
-                    styled.append(char, style="red undeline")
+                    styled.append(char, style="dim white strike")
 
                 # remaining_len = size - len(candidate_char)
                 # if remaining_len > 0:
@@ -79,12 +79,16 @@ def pwd_break(
                 break
 
         # Show final success message
-        live.update(Text(f"Found stringset: {break_attempt}", style="bold green"))
+        live.update(Text(f"[+] CRACKED: {break_attempt}\n", style="bold bright_green"))
 
 
 def handle_cmd(cmd: str):
-    if cmd == "exit":
-        rprint("[dim]Exiting pwd-brkr.. Goodbye! [/dim]")
+    if cmd.startswith("exit"):
+        if cmd.endswith(" --help") or cmd.endswith(" -h"):
+            rprint("[bright_yellow][?] Usage: exit[/bright_yellow]")
+            rprint("[dim white]    Terminates the pwd-brkr session[/dim white]\n")
+            return None
+        rprint("[dim cyan][-] Terminating session...[/dim cyan]")
         exit()
 
     # try #
@@ -100,7 +104,7 @@ def handle_cmd(cmd: str):
 
         if cmd.endswith(" --help") or cmd.endswith(" -h"):
             rprint(
-                "[yellow]Usage: random-break <max (if alone) else min>? <max>? <rate_limit>? <rate_limit_cooldown>?[/yellow]\n"
+                "[bright_yellow][?] Usage: random-break <max (if alone) else min>? <max>? <rate_limit>? <rate_limit_cooldown>?[/bright_yellow]\n"
             )
             is_help = True
 
@@ -123,42 +127,55 @@ def handle_cmd(cmd: str):
             rate_limit = int(args[3])
             rate_cooldown = int(args[4])
         elif len(args) > 5 and not default:
-            rprint("[red]try-break: Too many arguments.[/red]")
+            rprint("[red][x] ERROR: Too many arguments.[/red]")
 
         length = randint(min, max)
         random_pwd = "".join(secrets.choice(allowed_characters) for _ in range(length))
-        rprint(f"[yellow]The random password generated is: {random_pwd}\n[/yellow]")
-        confirmation = input("Continue (y/n)?  ")
+        rprint(f"[bright_yellow][*] TARGET GENERATED: {random_pwd}\n[/bright_yellow]")
+        confirmation = input("[>] Initiate crack sequence (y/n)? ")
 
         if confirmation.lower() == "y":
             pwd_break(
                 random_pwd, set_rate_limit=rate_limit, rate_cooldown=rate_cooldown
             )
 
-    elif cmd == "try-printallowedchar":
+    elif cmd.startswith("try-printallowedchar"):
+        if cmd.endswith(" --help") or cmd.endswith(" -h"):
+            rprint("[bright_yellow][?] Usage: try-printallowedchar[/bright_yellow]")
+            rprint("[dim white]    Displays the full character set used for cracking[/dim white]\n")
+            return None
         rprint(allowed_characters)
 
-    elif cmd == "list":
+    elif cmd.startswith("list"):
+        if cmd.endswith(" --help") or cmd.endswith(" -h"):
+            rprint("[bright_yellow][?] Usage: list[/bright_yellow]")
+            rprint("[dim white]    Displays all available commands with usage info[/dim white]\n")
+            return None
+
         print()
-        list_of_commands = Table(title="List Of Commands")
-        list_of_commands.add_column("No.", style="white", no_wrap=True)
-        list_of_commands.add_column("Command", style="cyan")
-        list_of_commands.add_column("Usage", style="yellow")
-        list_of_commands.add_column("Action", style="dim")
-        
-        list_of_commands.add_row("0", "unknown", "none", "Default action")
-        list_of_commands.add_row("1", "unknown", "none", "Default action")
-        list_of_commands.add_row("2", "unknown", "none", "Default action")
-        list_of_commands.add_row("3", "unknown", "none", "Default action")
-        list_of_commands.add_row("4", "unknown", "none", "Default action")
+        list_of_commands = Table(title="[COMMAND REGISTRY]", title_style="bold bright_cyan")
+        list_of_commands.add_column("#", style="dim white", no_wrap=True)
+        list_of_commands.add_column("Command", style="bright_cyan")
+        list_of_commands.add_column("Arguments", style="bright_yellow")
+        list_of_commands.add_column("Description", style="dim white")
+
+        list_of_commands.add_row(
+            "1",
+            "random-break",
+            "<max>\n<min> <max>\n<min> <max> <rate>\n<min> <max> <rate> <cd>",
+            "Generate & crack random stringset\nUse --help for details"
+        )
+        list_of_commands.add_row("2", "try-printallowedchar", "(none)", "Display allowed character set")
+        list_of_commands.add_row("3", "list", "(none)", "Show this command registry")
+        list_of_commands.add_row("4", "exit", "(none)", "Terminate session")
         console.print(list_of_commands)
-        rprint("[yellow]Sorry, that's not available right now :/\n[/yellow]")
+        print()
         
 
     elif cmd == "":
         return None
     else:
-        rprint(f"'{cmd}' is not a knowd pwd-brkr command.")
+        rprint(f"[red][x] UNKNOWN COMMAND: '{cmd}'[/red]")
 
 
 #################
@@ -168,30 +185,31 @@ def handle_cmd(cmd: str):
 user_cmd = None
 
 if __name__ == "__main__" and not pwd_brkr.is_sandbox_mode:
-    prompt = Text("[pwd-brkr] # ", style="green")
-    prompt.stylize("white", 11, 13)
+    prompt = Text("[pwd-brkr] # ", style="bright_cyan")
+    prompt.stylize("bright_white", 11, 13)
 
     print(
         boxen(
             """
-[green]
+[bright_cyan]
                 ██████╗>██╗>>>>██╗██████╗>>>>>>>██████╗>██████╗>██╗>>██╗██████╗>
                 ██╔══██╗██║>>>>██║██╔══██╗>>>>>>██╔══██╗██╔══██╗██║>██╔╝██╔══██╗
                 ██████╔╝██║>█╗>██║██║>>██║█████╗██████╔╝██████╔╝█████╔╝>██████╔╝
                 ██╔═══╝>██║███╗██║██║>>██║╚════╝██╔══██╗██╔══██╗██╔═██╗>██╔══██╗
                 ██║>>>>>╚███╔███╔╝██████╔╝>>>>>>██████╔╝██║>>██║██║>>██╗██║>>██║
                 ╚═╝>>>>>>╚══╝╚══╝>╚═════╝>>>>>>>╚═════╝>╚═╝>>╚═╝╚═╝>>╚═╝╚═╝>>╚═╝
+[/bright_cyan][bright_white]
                                 pwd-brkr v0.2 - dev.release
-
+[/bright_white][dim white]
         pwd-brkr is a clean stringset (basically password) guessing machine that's highly customizable and is aesthetically beautiful. developer version.
-[/green]
+[/dim white]
 """,
             style="double",
             text_alignment="center",
-            color="green",
+            color="cyan",
         )
     )
-    rprint("[yellow]For help in commands, use the '--help' or '-h' flag. Use 'exit' to exit the REPL. Type 'list' for a list of all available commands.[/yellow]\n")
+    rprint("[dim white][*] Type 'list' for available commands | Use --help flag for command info | 'exit' to quit[/dim white]\n")
     while True:
         rprint(prompt, end="")
         user_cmd = input().strip()
