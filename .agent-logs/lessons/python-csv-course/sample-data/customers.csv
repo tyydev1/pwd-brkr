@@ -1,0 +1,11 @@
+customer_id,name,email,city,country,join_date
+C001,John Smith,john.smith@email.com,New York,USA,2023-06-15
+C002,Jane Doe,jane.doe@email.com,Los Angeles,USA,2023-08-20
+C003,Bob Johnson,bob.johnson@email.com,Chicago,USA,2023-05-10
+C004,Alice Brown,alice.brown@email.com,Houston,USA,2023-09-05
+C005,Charlie Davis,charlie.davis@email.com,Phoenix,USA,2023-07-12
+C006,Emma Wilson,emma.wilson@email.com,Philadelphia,USA,2023-10-18
+C007,Frank Miller,frank.miller@email.com,San Antonio,USA,2023-04-22
+C008,Grace Lee,grace.lee@email.com,San Diego,USA,2023-11-30
+C009,Henry Martinez,henry.martinez@email.com,Dallas,USA,2023-03-08
+C010,Ivy Rodriguez,ivy.rodriguez@email.com,San Jose,USA,2023-12-15

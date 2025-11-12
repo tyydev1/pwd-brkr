@@ -1,0 +1,11 @@
+employee_id,name,department,salary,years_experience,email
+E001,Alice Johnson,Engineering,85000,5,alice.j@company.com
+E002,Bob Smith,Sales,72000,3,bob.s@company.com
+E003,Charlie Brown,Engineering,95000,8,charlie.b@company.com
+E004,David Lee,Marketing,68000,4,david.l@company.com
+E005,Emma Wilson,Engineering,78000,2,emma.w@company.com
+E006,Frank Miller,Sales,81000,6,frank.m@company.com
+E007,Grace Davis,HR,65000,7,grace.d@company.com
+E008,Henry Martinez,Engineering,92000,9,henry.m@company.com
+E009,Ivy Rodriguez,Marketing,71000,5,ivy.r@company.com
+E010,Jack Anderson,Sales,75000,4,jack.a@company.com
