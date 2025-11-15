@@ -346,6 +346,14 @@ def handle_cmd(cmd: str):
             rprint(escaped_chars)
             print()
 
+        elif cmd.startswith("clear") or cmd.startswith("cls"):
+            if cmd.endswith(" --help") or cmd.endswith(" -h"):
+                rprint("[bright_yellow][?] Usage: clear[/bright_yellow]")
+                rprint("[dim white]    Clears the screen[/dim white]\n")
+                return None
+
+            os.system("clear")
+
         elif cmd.startswith("list") or cmd.startswith("ls"):
             if cmd.endswith(" --help") or cmd.endswith(" -h"):
                 rprint("[bright_yellow][?] Usage: list[/bright_yellow]")
